@@ -10,3 +10,4 @@ SELECT nombre, UPPER (LEFT(nombre,2)) AS nombre FROM Fabricante;
 SELECT nombre,precio, ROUND(precio) AS precio FROM Productos;
 SELECT nombre,precio, FLOOR(precio) AS precio FROM Productos;
 SELECT codigo FROM Productos;
+SELECT DISTINCT codigo FROM productos;

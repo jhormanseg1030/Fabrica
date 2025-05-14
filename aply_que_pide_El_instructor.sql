@@ -3,7 +3,7 @@ DROP procedure IF EXISTS `Fabricante`;
 
 DELIMITER $$
 USE `fabrica`$$
-CREATE PROCEDURE `Fabricante` (	
+CREATE PROCEDURE `Fabricante`(	
 	IN nombre varchar(100)
 )
 BEGIN
@@ -24,9 +24,8 @@ CREATE PROCEDURE `Productos` (
 	IN codigo_fabricante int(10)
 )
 BEGIN
-	INSERT INTO Producto (nombre,precio,codigo_fabricante)
+	INSERT INTO Productos (nombre,precio,codigo_fabricante)
     VALUES (nombre,precio,codigo_fabricante);
 END$$
 
 DELIMITER ;
-

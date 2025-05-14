@@ -13,12 +13,15 @@ END$$
 
 DELIMITER ;
 
+
+
+
 USE `fabrica`;
 DROP procedure IF EXISTS `Productos`;
 
 DELIMITER $$
 USE `fabrica`$$
-CREATE PROCEDURE `Productos` (
+CREATE PROCEDURE `Productos`(
 	IN nombre varchar(100),
 	IN precio double,
 	IN codigo_fabricante int(10)

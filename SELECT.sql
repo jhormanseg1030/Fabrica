@@ -29,7 +29,9 @@ SELECT DISTINCT p.codigo_fabricante FROM productos as p;
 SELECT nombre FROM Fabricante ORDER BY nombre ASC;
 #14
 SELECT nombre FROM Fabricante ORDER BY nombre DESC;
-/* 15....SELECT nombre,precio FROM Productos ORDER BY nombre ASC*/
+#15
+SELECT nombre FROM Productos ORDER BY nombre ASC;
+SELECT precio FROM Productos ORDER BY precio DESC;
 #16
 SELECT * FROM fabricante LIMIT 5;
 #17
@@ -72,22 +74,81 @@ SELECT nombre FROM Productos WHERE nombre LIKE "%portatil%";
 SELECT nombre,precio FROM Productos WHERE nombre LIKE "%monitor%" AND  precio * 0.8945 < 215;
 #36
 SELECT nombre,precio * 0.8945  AS euros FROM Productos WHERE precio * 0.8945  >=180 ORDER BY precio DESC, nombre ASC;
-#37
+
+/*Consultas multitabla (Composición interna)*/
+#1
 SELECT P.nombre,P.precio,F.nombre FROM Productos AS P
 INNER JOIN fabricante f On p.codigo = f.codigo;
-#38
+#2
 SELECT P.nombre,P.precio,F.nombre FROM Productos AS P
 INNER JOIN fabricante f On p.codigo = f.codigo ORDER BY f.nombre ASC;
-#39
+#3
 SELECT p.codigo,p.nombre,f.codigo,f.nombre FROM Fabricante AS f
 INNER JOIN Productos AS p ON f.codigo= p.codigo;
-#40
+#4
 SELECT p.nombre,p.precio,f.nombre FROM Fabricante AS f
 INNER JOIN Productos AS p ON f.codigo= p.codigo ORDER BY precio ASC LIMIT 1;
-#41
+#5
 SELECT p.nombre,p.precio,f.nombre FROM Fabricante AS f
 INNER JOIN Productos AS p ON f.codigo= p.codigo ORDER BY precio DESC LIMIT 1;
-#42 
+#6 
 SELECT f.nombre,P.nombre FROM Productos AS P
-JOIN Fabricante AS f ON P.codigo = f.codigo 
-Where f.nombre = "Lenovo";
+JOIN Fabricante AS f ON P.codigo_fabricante = f.codigo 
+Where p.codigo_fabricante =2;
+#7
+SELECT f.nombre,P.nombre,precio * 0.8945 AS precio FROM Productos AS P
+JOIN Fabricante AS f ON P.codigo_fabricante = f.codigo 
+Where p.codigo_fabricante =6 AND precio * 0.8945  >200;
+#8
+SELECT f.nombre,p.nombre FROM Productos AS p
+JOIN Fabricante AS f ON P.codigo_fabricante = f.codigo 
+WHERE codigo_fabricante=1 OR codigo_fabricante=3 OR codigo_fabricante=5;
+#9
+SELECT f.nombre,p.nombre FROM Productos AS p
+JOIN Fabricante AS f ON P.codigo_fabricante = f.codigo 
+WHERE codigo_fabricante IN (1, 3, 5);
+#10
+SELECT nombre,precio FROM Productos WHERE RIGHT(nombre,1) = "e";
+#11
+SELECT nombre,precio FROM Productos WHERE nombre LIKE "%w%";
+#12----mirar en codigo 
+SELECT f.codigo, p.nombre, p.precio * 0.8945 AS precio FROM Fabricante AS f
+JOIN Productos AS p ON f.codigo=P.codigo_fabricante   
+WHERE precio * 0.8945  >=180 ORDER BY precio DESC, nombre ASC;
+#13
+SELECT DISTINCT f.codigo,f.nombre FROM Fabricante AS f
+INNER JOIN Productos AS p ON f.codigo = p.codigo_fabricante;
+
+/* Consultas multitabla (Composición externa)*/
+#1
+SELECT f.nombre AS nombre,p.nombre AS nombre FROM fabricante AS f
+LEFT JOIN Productos AS p ON f.codigo = p.codigo_fabricante ORDER BY f.nombre;
+#2
+SELECT DISTINCT nombre FROM fabricante
+WHERE codigo NOT IN (SELECT codigo_fabricante FROM productos);
+#3
+/* */
+
+
+/*Consultas resumen*/
+#1
+SELECT COUNT(*) FROM productos;
+#2
+SELECT COUNT(*) FROM Fabricante;
+#3
+SELECT COUNT(DISTINCT codigo_fabricante) AS codigo FROM Productos;
+#4
+SELECT AVG(precio) AS "media del precio" FROM Productos;
+#5
+SELECT MIN(precio) FROM Productos;
+#6
+SELECT MAX(precio) FROM Productos;
+#7
+SELECT nombre, precio FROM Productos WHERE precio= (SELECT MIN(precio)FROM Productos) LIMIT 1;
+#8
+SELECT nombre, precio FROM Productos WHERE precio= (SELECT MAX(precio)FROM Productos) LIMIT 1;
+#9
+SELECT SUM(precio) AS precio FROM Productos;
+#10
+SELECT COUNT(codigo_fabricante) FROM Productos WHERE codigo_fabricante =1;
+#11

@@ -70,5 +70,24 @@ SELECT nombre FROM Fabricante WHERE LENGTH(nombre) =4;
 SELECT nombre FROM Productos WHERE nombre LIKE "%portatil%";
 #35
 SELECT nombre,precio FROM Productos WHERE nombre LIKE "%monitor%" AND  precio * 0.8945 < 215;
-SELECT codigo FROM Productos;
-SELECT DISTINCT codigo FROM productos;
+#36
+SELECT nombre,precio * 0.8945  AS euros FROM Productos WHERE precio * 0.8945  >=180 ORDER BY precio DESC, nombre ASC;
+#37
+SELECT P.nombre,P.precio,F.nombre FROM Productos AS P
+INNER JOIN fabricante f On p.codigo = f.codigo;
+#38
+SELECT P.nombre,P.precio,F.nombre FROM Productos AS P
+INNER JOIN fabricante f On p.codigo = f.codigo ORDER BY f.nombre ASC;
+#39
+SELECT p.codigo,p.nombre,f.codigo,f.nombre FROM Fabricante AS f
+INNER JOIN Productos AS p ON f.codigo= p.codigo;
+#40
+SELECT p.nombre,p.precio,f.nombre FROM Fabricante AS f
+INNER JOIN Productos AS p ON f.codigo= p.codigo ORDER BY precio ASC LIMIT 1;
+#41
+SELECT p.nombre,p.precio,f.nombre FROM Fabricante AS f
+INNER JOIN Productos AS p ON f.codigo= p.codigo ORDER BY precio DESC LIMIT 1;
+#42 
+SELECT f.nombre,P.nombre FROM Productos AS P
+JOIN Fabricante AS f ON P.codigo = f.codigo 
+Where f.nombre = "Lenovo";

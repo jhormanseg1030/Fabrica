@@ -152,3 +152,93 @@ SELECT SUM(precio) AS precio FROM Productos;
 #10
 SELECT COUNT(codigo_fabricante) FROM Productos WHERE codigo_fabricante =1;
 #11
+SELECT AVG (p.precio) AS "precio media" FROM Productos AS p
+INNER JOIN fabricante AS f ON p.codigo_fabricante = f.codigo WHERE f.nombre = "Asus";
+#12
+SELECT MIN(p.precio) AS "BARATO" FROM Productos AS p
+INNER JOIN fabricante AS f ON p.codigo_fabricante = f.codigo WHERE f.nombre = "Asus";
+#13
+SELECT MAX(p.precio) AS "BARATO" FROM Productos AS p
+INNER JOIN fabricante AS f ON p.codigo_fabricante = f.codigo WHERE f.nombre = "Asus";
+#14
+SELECT sum(p.precio) AS "BARATO" FROM Productos AS p
+INNER JOIN fabricante AS f ON p.codigo_fabricante = f.codigo WHERE f.nombre = "Asus";
+#15
+SELECT MAX(p.precio) AS "Precio Maximo",
+	MIN(P.precio) AS "precio Minimo",
+	AVG(P.precio) AS "Precio medio"
+FROM Productos AS p
+INNER JOIN fabricante AS f ON p.codigo_fabricante = f.codigo WHERE f.nombre = "Crucial";
+#16
+SELECT f.nombre AS nombre, COUNT(p.codigo) AS codigo
+FROM fabricante  AS f 
+lEFT JOIN Productos AS p ON p.codigo_fabricante = f.codigo GROUP BY f.nombre ORDER BY codigo DESC;  
+#17 falta colocar el nombre que no aparece :ccc
+SELECT MAX(p.precio) AS "Precio Maximo",
+	MIN(P.precio) AS "precio Minimo",
+	AVG(P.precio) AS "Precio medio"
+FROM Productos AS p
+INNER JOIN fabricante AS f ON p.codigo_fabricante = f.codigo GROUP BY f.nombre;	
+#18 no se si esta bien :,333
+SELECT p.codigo_fabricante,
+	MAX(p.precio) AS "Precio Maximo",
+	MIN(P.precio) AS "precio Minimo",
+	AVG(P.precio) AS "Precio medio",
+    count(p.codigo_fabricante) AS "Total"
+FROM Productos AS p GROUP BY p.codigo_fabricante HAVING AVG (p.precio) > 200;	
+#19
+SELECT f.nombre AS "Nombre fabricante",
+	MAX(p.precio) AS "Precio Maximo",
+	MIN(P.precio) AS "precio Minimo",
+	AVG(P.precio) AS "Precio medio",
+    count(p.codigo_fabricante) AS "Total"
+FROM fabricante AS f 
+INNER JOIN Productos AS P ON  p.codigo_fabricante = f.codigo
+GROUP BY f.nombre HAVING AVG (p.precio) > 200;
+#20
+SELECT COUNT(*) AS "numero de productos"
+FROM Productos WHERE precio >= 180;
+#21
+SELECT f.nombre AS "nombre del fabricante", COUNT(p.codigo_fabricante) AS "MAYOR"
+FROM fabricante AS f 
+INNER JOIN Productos AS p ON f.codigo = p.codigo_fabricante  WHERE p.precio >=180 GROUP BY f.nombre;
+#22
+SELECT codigo_fabricante, AVG(precio) 
+FROM Productos GROUP BY codigo_fabricante; 
+#23 dudas si esta bien o no :,c
+SELECT codigo_fabricante,nombre, AVG(precio) 
+FROM Productos GROUP BY codigo_fabricante; 
+#24 
+SELECT f.nombre AS "Fabricante", p.precio AS "precio"
+FROM fabricante AS f 
+INNER JOIN Productos AS p ON p.codigo = f.codigo
+GROUP BY f.nombre HAVING AVG (p.precio) >= 150;	
+#25
+SELECT f.nombre AS "Fabricante"
+FROM fabricante AS f 
+INNER JOIN Productos AS p ON p.codigo_fabricante = f.codigo
+GROUP BY f.nombre HAVING  COUNT(f.codigo) >= 2;	
+#26 sale al revez xd
+SELECT f.nombre AS "Fabricante", COUNT(P.codigo_fabricante)
+FROM fabricante AS f 
+INNER JOIN Productos AS p ON p.codigo_fabricante = f.codigo
+WHERE p.precio >=220 GROUP BY f.nombre;	
+#27 sale al revez xd
+SELECT f.nombre AS "Fabricante", COUNT(CASE WHEN p.precio >=220 THEN p.codigo ELSE NULL END) AS "numero de productos :,3"
+FROM fabricante AS f 
+lEFT JOIN Productos AS p ON p.codigo_fabricante = f.codigo
+GROUP BY f.nombre;	
+#28
+SELECT f.nombre AS "Fabricante"
+FROM fabricante AS f 
+INNER JOIN Productos AS p ON p.codigo_fabricante = f.codigo
+GROUP BY f.nombre HAVING SUM(p.precio) >1000;
+#29 revisar
+SELECT
+    p.nombre AS "producto",
+    p.precio,
+    f.nombre AS nombre_fabricante
+FROM Productos AS p 
+INNER JOIN fabricante AS f ON p.codigo_fabricante = f.codigo WHERE (p.codigo_fabricante, p.precio )
+IN (SELECT codigo, MAX(precio) FROM Productos GROUP BY codigo)
+ORDER BY nombre_fabricante ASC;

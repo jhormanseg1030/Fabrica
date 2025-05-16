@@ -20,9 +20,9 @@ SELECT nombre, UPPER (LEFT(nombre,2)) AS nombre FROM Fabricante;
 SELECT nombre,precio, ROUND(precio) AS precio FROM Productos;
 #10
 SELECT nombre,precio, FLOOR(precio) AS precio FROM Productos;
-#11
-SELECT f.codigo FROM Fabricante AS f
-JOIN Productos AS p ON f.codigo= p.codigo_fabricante;
+#15
+SELECT nombre FROM Productos ORDER BY nombre ASC;
+SELECT precio FROM Productos ORDER BY precio DESC;
 #12
 SELECT DISTINCT p.codigo_fabricante FROM productos as p;
 #13
@@ -242,3 +242,57 @@ FROM Productos AS p
 INNER JOIN fabricante AS f ON p.codigo_fabricante = f.codigo WHERE (p.codigo_fabricante, p.precio )
 IN (SELECT codigo, MAX(precio) FROM Productos GROUP BY codigo)
 ORDER BY nombre_fabricante ASC;
+
+/*Subconsultas (En la cláusula WHERE) 
+Con operadores básicos de comparación */
+#1
+SELECT * FROM productos WHERE codigo_fabricante = '2';
+#2
+SELECT p.*, f.nombre FROM productos p, fabricante f WHERE p.codigo_fabricante = f.codigo AND p.precio = (SELECT MAX(p.precio)FROM productos p, fabricante f WHERE p.codigo_fabricante = f.codigo AND f.nombre = 'Lenovo');
+#3
+SELECT p.nombre, f.nombre, p.precio FROM productos p, fabricante f WHERE p.codigo_fabricante = f.codigo AND p.codigo_fabricante = 2 ORDER BY p.precio DESC LIMIT 1;
+#4
+SELECT p.nombre, f.nombre, p.precio FROM productos p, fabricante f WHERE p.codigo_fabricante = f.codigo AND p.codigo_fabricante = 3 ORDER BY p.precio ASC LIMIT 1;
+#5
+SELECT * FROM productos WHERE precio >= (SELECT MAX(precio) FROM productos WHERE codigo_fabricante = (SELECT codigo FROM fabricante WHERE nombre = 'Lenovo'))ORDER BY precio DESC;
+#6
+SELECT nombre, precio FROM productos WHERE codigo_fabricante = '1' AND precio > (SELECT AVG(precio) FROM productos WHERE codigo_fabricante = '1');
+
+/*Subconsultas con ALL y ANY */
+#7
+SELECT nombre,precio FROM productos WHERE precio >= ALL (SELECT precio FROM productos);
+#8
+SELECT nombre,precio FROM productos WHERE precio <= ALL (SELECT precio FROM productos);
+#9
+SELECT nombre FROM fabricante AS f WHERE f.codigo = ANY (SELECT codigo_fabricanteFROM productos);
+#10
+SELECT nombre FROM fabricante AS f WHERE f.codigo <> ALL (SELECT codigo_fabricante FROM productos WHERE codigo_fabricante);
+
+/Subconsultas con IN y NOT IN/
+#11
+SELECT DISTINCT nombre FROM fabricante WHERE codigo IN (SELECT codigo_fabricante FROM productos);
+#12
+SELECT DISTINCT nombre FROM fabricante WHERE codigo NOT IN (SELECT codigo_fabricante FROM productos);
+
+/*Subconsultas con EXISTS y NOT EXISTS */
+#13
+SELECT nombre FROM Fabricante AS f WHERE EXISTS (SELECT 1 FROM productos AS p WHERE f.codigo = P.codigo_fabricante);
+#14
+SELECT nombre FROM Fabricante AS f WHERE NOT EXISTS (SELECT 1 FROM productos AS p WHERE f.codigo = P.codigo_fabricante);
+
+/* Subconsultas correlacionadas*/
+#15
+SELECT f.nombre, p.nombre, p.precio FROM fabricante f 
+JOIN productos p ON f.codigo = p.codigo_fabricante WHERE p.precio = (SELECT MAX(precio)FROM productos WHERE codigo_fabricante = f.codigo)
+ORDER BY p.precio DESC;
+#16
+SELECT p.nombre, p.precio, f.nombre FROM productos AS p 
+JOIN fabricante f ON p.codigo_fabricante = f.codigo WHERE p.precio >= (SELECT AVG(precio)FROM productos WHERE codigo_fabricante = f.codigo)
+ORDER BY f.nombre,p.precio DESC;
+#17
+SELECT nombre, precio FROM productos WHERE codigo_fabricante = '1' AND precio > (SELECT AVG(precio) FROM productos WHERE codigo_fabricante = '1');
+
+/Subconsultas (En la cláusula HAVING)/
+#18
+SELECT f.nombre FROM fabricante AS f WHERE (SELECT COUNT(*)FROM productos
+WHERE codigo_fabricante = f.codigo) = (SELECT COUNT(*) FROM productos WHERE codigo_fabricante = (SELECT codigo FROM fabricante WHERE nombre = 'Lenovo'))AND f.nombre <> 'Lenovo';
